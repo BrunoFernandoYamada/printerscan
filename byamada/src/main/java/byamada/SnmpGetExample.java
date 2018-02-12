@@ -64,7 +64,7 @@ public class SnmpGetExample
   private static String  port    = "161";
 
   // OID of MIB RFC 1213; Scalar Object = .iso.org.dod.intrnet.mgmt.mib-2.system.sysDescr.0
-  private static String  oidValue  = "1.3.6.1.2.1.43.10.2.1.3.1.1";  // ends with 0 for scalar object
+  private static String  oidValue  = "1.3.6.1.2.1.43.10.2.1.4.1.1";  // ends with 0 for scalar object
 
   private static int    snmpVersion  = SnmpConstants.version1;
 
