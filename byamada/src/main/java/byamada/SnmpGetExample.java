@@ -44,6 +44,10 @@
 //
  package byamada;
 
+import java.util.Date;
+
+import javax.swing.JOptionPane;
+
 import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
 import org.snmp4j.Snmp;
@@ -59,12 +63,16 @@ import org.snmp4j.transport.DefaultUdpTransportMapping;
 
 public class SnmpGetExample
 {
-  private static String  ipAddress  = "192.168.10.71";
 
   private static String  port    = "161";
 
   // OID of MIB RFC 1213; Scalar Object = .iso.org.dod.intrnet.mgmt.mib-2.system.sysDescr.0
   private static String  oidValue  = "1.3.6.1.2.1.43.10.2.1.4.1.1";  // ends with 0 for scalar object
+  private static String  oidName  = "1.3.6.1.2.1.1.1.0";
+  private static String  oidSuppliesDescription  = "1.3.6.1.2.1.43.11.1.1.6.1.1";
+  private static String  oidPrtMarkerSuppliesMaxCapacity  = "1.3.6.1.2.1.43.11.1.1.8.1.1";
+  private static String  oidPrtMarkerSuppliesLevel  = "1.3.6.1.2.1.43.11.1.1.9.1.1";
+
 
   private static int    snmpVersion  = SnmpConstants.version1;
 
@@ -73,6 +81,8 @@ public class SnmpGetExample
   public static void main(String[] args) throws Exception
   {
     System.out.println("SNMP GET Demo");
+    
+    String ipAddress = JOptionPane.showInputDialog("Digite o IP da Impressora!");  
 
     // Create TransportMapping and Listen
     TransportMapping transport = new DefaultUdpTransportMapping();
@@ -89,6 +99,11 @@ public class SnmpGetExample
     // Create the PDU object
     PDU pdu = new PDU();
     pdu.add(new VariableBinding(new OID(oidValue)));
+    pdu.add(new VariableBinding(new OID(oidName)));
+    pdu.add(new VariableBinding(new OID(oidSuppliesDescription)));
+    pdu.add(new VariableBinding(new OID(oidPrtMarkerSuppliesMaxCapacity)));
+    pdu.add(new VariableBinding(new OID(oidPrtMarkerSuppliesLevel)));
+    
     pdu.setType(PDU.GET);
     pdu.setRequestID(new Integer32(1));
 
@@ -113,6 +128,59 @@ public class SnmpGetExample
         if (errorStatus == PDU.noError)
         {
           System.out.println("Snmp Get Response = " + responsePDU.getVariableBindings());
+          String nome = responsePDU.getVariableBindings().get(1).toString();
+          if(nome.contains("=")){            
+	  			int len = nome.indexOf("=");            
+	  			nome=nome.substring(len+1, nome.length());  
+	  			nome.replace("]", "");
+	  		}    
+          
+          String leitura = responsePDU.getVariableBindings().firstElement().toString();
+          if(leitura.contains("=")){            
+	  			int len = leitura.indexOf("=");            
+	  			leitura=leitura.substring(len+1, leitura.length());  
+	  			leitura.replace("]", "");
+	  		}    
+          
+          System.out.println("Snmp Get Response = " + responsePDU.getVariableBindings());
+          String descSuprimento = responsePDU.getVariableBindings().get(2).toString();
+          if(descSuprimento.contains("=")){            
+	  			int len = descSuprimento.indexOf("=");            
+	  			descSuprimento=descSuprimento.substring(len+1, descSuprimento.length());  
+	  			descSuprimento.replace("]", "");
+	  		}    
+          
+          System.out.println("Snmp Get Response = " + responsePDU.getVariableBindings());
+          String maxCapacity = responsePDU.getVariableBindings().get(3).toString();
+          if(maxCapacity.contains("=")){            
+	  			int len = maxCapacity.indexOf("=");            
+	  			maxCapacity=maxCapacity.substring(len+1, maxCapacity.length());  
+	  			maxCapacity.replace("]", "");
+	  		
+	  		}    
+          
+          System.out.println("Snmp Get Response = " + responsePDU.getVariableBindings());
+          String levelSup = responsePDU.getVariableBindings().get(4).toString();
+          if(levelSup.contains("=")){            
+	  		int len1 = levelSup.indexOf("=");            
+	  		levelSup=levelSup.substring(len1+1, levelSup.length());  
+	  	    levelSup.replace("]", "");
+          }
+	  	    
+	  	    Double total = Double.parseDouble(maxCapacity);
+	  	    Double levelS = Double.parseDouble(levelSup);
+	  	    /*if(levelS < 0) {
+	  	    	levelS = 0.0;
+	  	    }*/
+	  	    
+	  	    Double porc = (levelS * 100)/total;
+          
+          JOptionPane.showMessageDialog(null,"Modelo: "+ nome + 
+        		  "\nTotal de Cópias: "+ leitura +
+        		  "\nTipo de Suplemento: "+ descSuprimento +
+        		  "\nToner restante: "+ porc +"%");
+          
+          
         }
         else
         {
