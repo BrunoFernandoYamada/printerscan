@@ -169,16 +169,16 @@ public class SnmpGetExample
 	  	    
 	  	    Double total = Double.parseDouble(maxCapacity);
 	  	    Double levelS = Double.parseDouble(levelSup);
-	  	    /*if(levelS < 0) {
+	  	    if(levelS < 0) {
 	  	    	levelS = 0.0;
-	  	    }*/
+	  	    }
 	  	    
 	  	    Double porc = (levelS * 100)/total;
           
           JOptionPane.showMessageDialog(null,"Modelo: "+ nome + 
         		  "\nTotal de Cópias: "+ leitura +
         		  "\nTipo de Suplemento: "+ descSuprimento +
-        		  "\nToner restante: "+ porc +"%");
+        		  "\nToner restante: "+ porc +"%" + (levelS <=0?" (Toner Baixo)":""));
           
           
         }
@@ -188,16 +188,19 @@ public class SnmpGetExample
           System.out.println("Error Status = " + errorStatus);
           System.out.println("Error Index = " + errorIndex);
           System.out.println("Error Status Text = " + errorStatusText);
+          JOptionPane.showMessageDialog(null,"Impressora Reconhecida porem, Comando não cadastrado \ncontate o Suporte para adicionar o modelo");
         }
       }
       else
       {
         System.out.println("Error: Response PDU is null");
+        JOptionPane.showMessageDialog(null,"Não há impressora conectada no IP selecionado");
       }
     }
     else
     {
       System.out.println("Error: Agent Timeout... ");
+      JOptionPane.showMessageDialog(null,"Não foi possível encontrar impressora");
     }
     snmp.close();
   }
