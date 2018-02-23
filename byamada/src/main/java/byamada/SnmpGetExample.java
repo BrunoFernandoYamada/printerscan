@@ -68,7 +68,10 @@ public class SnmpGetExample
 
   // OID of MIB RFC 1213; Scalar Object = .iso.org.dod.intrnet.mgmt.mib-2.system.sysDescr.0
   private static String  oidValue  = "1.3.6.1.2.1.43.10.2.1.4.1.1";  // ends with 0 for scalar object
+  //private static String  oidName  = "1.3.6.1.2.1.43.5.1.1.17.1";
   private static String  oidName  = "1.3.6.1.2.1.1.1.0";
+  private static String  oidSerie  = "1.3.6.1.2.1.43.5.1.1.17.1";
+  
   private static String  oidSuppliesDescription  = "1.3.6.1.2.1.43.11.1.1.6.1.1";
   private static String  oidPrtMarkerSuppliesMaxCapacity  = "1.3.6.1.2.1.43.11.1.1.8.1.1";
   private static String  oidPrtMarkerSuppliesLevel  = "1.3.6.1.2.1.43.11.1.1.9.1.1";
@@ -103,6 +106,7 @@ public class SnmpGetExample
     pdu.add(new VariableBinding(new OID(oidSuppliesDescription)));
     pdu.add(new VariableBinding(new OID(oidPrtMarkerSuppliesMaxCapacity)));
     pdu.add(new VariableBinding(new OID(oidPrtMarkerSuppliesLevel)));
+    pdu.add(new VariableBinding(new OID(oidSerie)));
     
     pdu.setType(PDU.GET);
     pdu.setRequestID(new Integer32(1));
@@ -157,7 +161,16 @@ public class SnmpGetExample
 	  			maxCapacity=maxCapacity.substring(len+1, maxCapacity.length());  
 	  			maxCapacity.replace("]", "");
 	  		
-	  		}    
+	  		}  
+          
+          System.out.println("Snmp Get Response = " + responsePDU.getVariableBindings());
+          String numeroSerie = responsePDU.getVariableBindings().get(5).toString();
+          if(numeroSerie.contains("=")){            
+	  			int len = numeroSerie.indexOf("=");            
+	  			numeroSerie=numeroSerie.substring(len+1, numeroSerie.length());  
+	  			numeroSerie.replace("]", "");
+	  		
+	  		}   
           
           System.out.println("Snmp Get Response = " + responsePDU.getVariableBindings());
           String levelSup = responsePDU.getVariableBindings().get(4).toString();
@@ -178,7 +191,8 @@ public class SnmpGetExample
           JOptionPane.showMessageDialog(null,"Modelo: "+ nome + 
         		  "\nTotal de Cópias: "+ leitura +
         		  "\nTipo de Suplemento: "+ descSuprimento +
-        		  "\nToner restante: "+ porc +"%" + (levelS <=0?" (Toner Baixo)":""));
+        		  "\nToner restante: "+ porc +"%" + (levelS <=0?" (Toner Baixo)":"") +
+        		  "\nNúmero de Série: "+ numeroSerie);
           
           
         }
